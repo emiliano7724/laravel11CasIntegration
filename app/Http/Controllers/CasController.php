@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -43,15 +44,17 @@ class CasController extends Controller
         try {
             $user = User::where('cuil', $request->cuil)->firstOrFail();
             Auth::login($user);
-            $nombre=$user->name;
-            $email=$user->email;
-            return redirect()->route('home');
-            //return redirect()->route('home', compact('nombre','email'));
 
+            return redirect()->route('home');
+
+
+        } catch (ModelNotFoundException $e) {
+
+            Log::alert("Usuario no registrado en nuestro sistema");
+            return redirect()->route('casLogout');
         } catch (\Exception $e) {
 
             Log::error($e->getMessage());
-            dd($e->getMessage());
         }
 
 
