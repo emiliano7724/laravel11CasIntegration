@@ -57,11 +57,12 @@ class CasController extends Controller
 
     }
 
-    public function casLogout()
+    public function casLogout(Request $request)
     {
 
         Auth::logout();
-
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         phpCAS::client(CAS_VERSION_2_0,
             config('cas.host'),
